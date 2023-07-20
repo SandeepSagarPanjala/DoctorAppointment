@@ -8,7 +8,7 @@ const target = env.ASPNETCORE_HTTPS_PORT
 
 const PROXY_CONFIG = [
   {
-    context: ["/patient"],
+    context: ["/patient", "/doctor", "/appointment", "/prescription"],
     proxyTimeout: 10000,
     target: target,
     secure: false,

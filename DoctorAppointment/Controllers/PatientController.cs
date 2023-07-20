@@ -1,8 +1,8 @@
-﻿using System.Reflection;
-using Dapper;
-using DoctorAppointment.Models;
+﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
+
+using Model = DoctorAppointment.Models.PatientModel;
 
 namespace DoctorAppointment.Controllers;
 
@@ -30,7 +30,7 @@ public class PatientController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var query = @"SELECT * FROM ""Patient"" ";
-        var records = await connection.QueryAsync<PatientModel>(query);
+        var records = await connection.QueryAsync<Model>(query);
         return Ok(records);
     }
 
@@ -43,22 +43,22 @@ public class PatientController : ControllerBase
     private async Task<IActionResult> GetByIdHelper(int id)
     {
         var query = @$"SELECT * FROM ""Patient"" WHERE ""PatientId"" = {id}";
-        var record = await connection.QuerySingleAsync<PatientModel>(query);
+        var record = await connection.QuerySingleAsync<Model>(query);
         return Ok(record);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] PatientModel model)
+    public async Task<IActionResult> Create([FromBody] Model model)
     {
         var query = $@"INSERT INTO ""Patient"" (""Name"", ""Address"", ""Phone"", ""DateOfBirth"", ""Gender"")
                         VALUES ('{model.Name}', '{model.Address}', '{model.Phone}', '{model.DateOfBirth.Date}', '{model.Gender}')
                         RETURNING ""PatientId""";
-        var newPatientId = await this.connection.ExecuteScalarAsync(query);
-        return await this.GetByIdHelper((int)newPatientId);
+        var newId = await this.connection.ExecuteScalarAsync(query);
+        return await this.GetByIdHelper((int)newId);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] PatientModel model)
+    public async Task<IActionResult> Update(int id, [FromBody] Model model)
     {
         var query = $@"UPDATE ""Patient"" SET ""Name"" = '{model.Name}', ""Address"" = '{model.Address}',
                         ""Phone"" = '{model.Phone}', ""DateOfBirth"" = '{model.DateOfBirth.Date}', ""Gender"" = '{model.Gender}'

@@ -1,5 +1,4 @@
-﻿using System;
-namespace DoctorAppointment.Models
+﻿namespace DoctorAppointment.Models
 {
 	public class PatientModel
 	{
