@@ -28,29 +28,19 @@ public class PrescriptionController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromBody] AppointmentFilterModel model)
+    public async Task<IActionResult> GetAll([FromBody] PrescriptionFilterModel model)
     {
-        var where = "WHERE 1 = 1";
+        var where = @$"WHERE a.""AppointmentId"" = {model.AppointmentId}";
 
-        if(string.IsNullOrEmpty(model.PatientName))
+        if(!string.IsNullOrEmpty(model.MedicationName))
         {
-            where += $@" AND p.""PatientName"" like '%{model.PatientName}%' ";
+            where += $@" AND p.""MedicationName"" like '%{model.MedicationName}%' ";
         }
 
-        if (string.IsNullOrEmpty(model.DoctorName))
-        {
-            where += $@" AND d.""DoctorName"" like '%{model.DoctorName}%' ";
-        }
-
-        if (model.AppointmentDate != null)
-        {
-            where += $@" AND a.""AppointmentDate"" = '{model.AppointmentDate?.Date}' ";
-        }
-
-        var query = @$"SELECT a.*, p.""Name"" AS ""PatientName"", d.""Name"" AS ""DoctorName""  FROM ""Appointment"" a
-                        JOIN ""Patient"" p on p.""PatientId"" = a.""PatientId""
-                        JOIN ""Doctor"" d on d.""DoctorId"" = a.""DoctorId"" {where} ";
-        var records = await connection.QueryAsync<AppointmentFetchModel>(query);
+        var query = @$"SELECT p.* FROM ""Prescription"" p 
+                        JOIN ""Appointment"" a on a.""AppointmentId"" = p.""AppointmentId"" {where} ";
+                        
+        var records = await connection.QueryAsync<Model>(query);
         return Ok(records);
     }
 
@@ -71,7 +61,7 @@ public class PrescriptionController : ControllerBase
     public async Task<IActionResult> Create([FromBody] Model model)
     {
         var query = $@"INSERT INTO ""Prescription"" (""AppointmentId"", ""MedicationName"", ""Dosage"", ""Instructions"")
-                        VALUES ({model.AppointmentId}, {model.MedicationName}, '{model.Dosage}', '{model.Instructions}')
+                        VALUES ({model.AppointmentId}, '{model.MedicationName}', '{model.Dosage}', '{model.Instructions}')
                         RETURNING ""PrescriptionId""";
         var newId = await this.connection.ExecuteScalarAsync(query);
         return await this.GetByIdHelper((int)newId);

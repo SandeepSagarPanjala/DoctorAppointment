@@ -32,12 +32,12 @@ public class AppointmentController : ControllerBase
     {
         var where = "WHERE 1 = 1";
 
-        if(string.IsNullOrEmpty(model.PatientName))
+        if(!string.IsNullOrEmpty(model.PatientName))
         {
             where += $@" AND p.""PatientName"" like '%{model.PatientName}%' ";
         }
 
-        if (string.IsNullOrEmpty(model.DoctorName))
+        if (!string.IsNullOrEmpty(model.DoctorName))
         {
             where += $@" AND d.""DoctorName"" like '%{model.DoctorName}%' ";
         }
@@ -86,8 +86,8 @@ public class AppointmentController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] Model model)
     {
-        var query = $@"UPDATE ""Doctor"" SET ""DoctorId"" = '{model.DoctorId}', ""PatientId"" = '{model.PatientId}',
-                        ""AppointmentDate"" = '{model.AppointmentDate.Date}', ""AppointmentTime"" = '{model.AppointmentTime}'
+        var query = $@"UPDATE ""Appointment"" SET ""DoctorId"" = '{model.DoctorId}', ""PatientId"" = '{model.PatientId}',
+                        ""AppointmentDate"" = '{model.AppointmentDate.Date}', ""AppointmentTime"" = '{model.AppointmentTime}',
                         ""Notes"" = '{model.Notes}' WHERE ""AppointmentId"" = {id} ";
         var updatedCount = await this.connection.ExecuteAsync(query);
         return Ok(updatedCount);

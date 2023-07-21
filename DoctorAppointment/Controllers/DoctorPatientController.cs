@@ -30,10 +30,9 @@ public class DoctorPatientController : ControllerBase
     public async Task<IActionResult> GetById(int id)
     {
         var query = @$"SELECT p.* FROM ""Appointment"" a 
-                        JOIN ""Doctor"" d on d.""DoctorId"" = a.""DoctorId""
                         JOIN ""Patient"" p on p.""PatientId"" = a.""PatientId""
-                        WHERE ""DoctorId"" = {id}";
-        var record = await connection.QuerySingleAsync<Model>(query);
+                        WHERE a.""DoctorId"" = {id}";
+        var record = await connection.QueryAsync<Model>(query);
         return Ok(record);
     }
 }

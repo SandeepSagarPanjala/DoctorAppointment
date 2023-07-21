@@ -31,8 +31,8 @@ public class PatientAppointmentController : ControllerBase
     {
         var query = @$"SELECT a.* FROM ""Patient"" p
                     JOIN ""Appointment"" a on a.""PatientId"" = p.""PatientId""
-                    WHERE ""PatientId"" = {id}";
-        var record = await connection.QuerySingleAsync<Model>(query);
+                    WHERE p.""PatientId"" = {id}";
+        var record = await connection.QueryAsync<Model>(query);
         return Ok(record);
     }
 }
