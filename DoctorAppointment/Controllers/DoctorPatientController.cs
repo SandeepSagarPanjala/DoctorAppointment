@@ -29,7 +29,7 @@ public class DoctorPatientController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var query = @$"SELECT p.* FROM ""Appointment"" a 
+        var query = @$"SELECT DISTINCT ON (p.""PatientId"") p.* FROM ""Appointment"" a 
                         JOIN ""Patient"" p on p.""PatientId"" = a.""PatientId""
                         WHERE a.""DoctorId"" = {id}";
         var record = await connection.QueryAsync<Model>(query);

@@ -59,7 +59,6 @@
   [formGroup]="mainForm"
   (ngSubmit)="submit()"
 >
-  {{ mainForm.value | json }}
   <div class="form-group mt-2" [class.d-none]="currentMode === mode.Add">
     <label>Prescription Id <code>*</code></label>
     <input class="form-control" readonly formControlName="prescriptionId" />
