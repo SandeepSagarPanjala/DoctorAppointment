@@ -1,8 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 import { AppComponent } from './app.component';
@@ -25,13 +26,15 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
+    NgSelectModule,
     FormsModule,
+    ReactiveFormsModule,
     NgbModule,
     RouterModule.forRoot([
       { path: '', component: AppointmentComponent, pathMatch: 'full' },
       { path: 'doctors', component: DoctorComponent },
       { path: 'patients', component: PatientComponent },
-      { path: 'prescriptions', component: PrescriptionComponent },
+      { path: 'prescription/:id', component: PrescriptionComponent },
     ])
   ],
   providers: [
