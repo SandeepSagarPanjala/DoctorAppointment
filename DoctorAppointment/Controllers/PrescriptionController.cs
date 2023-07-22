@@ -27,7 +27,7 @@ public class PrescriptionController : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpPost("filter")]
     public async Task<IActionResult> GetAll([FromBody] PrescriptionFilterModel model)
     {
         var where = @$"WHERE a.""AppointmentId"" = {model.AppointmentId}";
@@ -57,7 +57,7 @@ public class PrescriptionController : ControllerBase
         return Ok(record);
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] Model model)
     {
         var query = $@"INSERT INTO ""Prescription"" (""AppointmentId"", ""MedicationName"", ""Dosage"", ""Instructions"")

@@ -27,19 +27,19 @@ public class AppointmentController : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpPost("filter")]
     public async Task<IActionResult> GetAll([FromBody] AppointmentFilterModel model)
     {
         var where = "WHERE 1 = 1";
 
         if(!string.IsNullOrEmpty(model.PatientName))
         {
-            where += $@" AND p.""PatientName"" like '%{model.PatientName}%' ";
+            where += $@" AND p.""Name"" like '%{model.PatientName}%' ";
         }
 
         if (!string.IsNullOrEmpty(model.DoctorName))
         {
-            where += $@" AND d.""DoctorName"" like '%{model.DoctorName}%' ";
+            where += $@" AND d.""Name"" like '%{model.DoctorName}%' ";
         }
 
         if (model.AppointmentDate != null)
@@ -52,7 +52,7 @@ public class AppointmentController : ControllerBase
             where += @$" AND a.""AppointmentId"" = {model.AppointmentId} ";
         }
 
-        var query = @$"SELECT a.*, p.""Name"" AS ""PatientName"", d.""Name"" AS ""DoctorName""  FROM ""Appointment"" a
+        var query = @$"SELECT a.*, p.""PatientId"", p.""Name"" AS ""PatientName"", d.""DoctorId"", d.""Name"" AS ""DoctorName""  FROM ""Appointment"" a
                         JOIN ""Patient"" p on p.""PatientId"" = a.""PatientId""
                         JOIN ""Doctor"" d on d.""DoctorId"" = a.""DoctorId"" {where} ";
         var records = await connection.QueryAsync<AppointmentFetchModel>(query);
@@ -72,7 +72,7 @@ public class AppointmentController : ControllerBase
         return Ok(record);
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] Model model)
     {
         var query = $@"INSERT INTO ""Appointment"" (""PatientId"", ""DoctorId"", ""AppointmentDate"", ""AppointmentTime"", ""Notes"")
