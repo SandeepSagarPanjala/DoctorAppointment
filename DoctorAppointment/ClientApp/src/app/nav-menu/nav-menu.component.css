@@ -27,3 +27,10 @@ html {
   color: #00ABE1 !important;
 }
 
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  color: #161f6d;
+}
+
